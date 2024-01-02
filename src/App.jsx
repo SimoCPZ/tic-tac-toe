@@ -26,8 +26,12 @@ function App() {
 
   const activePlayer = deriveActivePlayer(gameTurns);
 
+  // We use the spread operator to copy to leave the initialGameBoard clear
+  let gameBoard = [...initialGameBoard.map(array => [...array])];
 
-  let gameBoard = initialGameBoard;
+  // This modifies the initialGameBoard so the rematch won't work 
+  // let gameBoard = initialGameBoard;
+
   for (const turn of gameTurns) {
     const { square, player } = turn;
     const { row, col } = square;
@@ -64,6 +68,10 @@ function App() {
     });
   }
 
+  function handleRestart() {
+    setGameTurns([]);
+  }
+
   return <main>
     <div id="game-container">
       <ol id="players" className="highlight-player">
@@ -71,7 +79,7 @@ function App() {
         <Player initialName="player 2" symbol="O" isActive={activePlayer === 'O'} />
       </ol>
       {/* Pass X or O based on the active player */}
-      {(winner || hasDraw) && <GameOver winner={winner} />}
+      {(winner || hasDraw) && <GameOver winner={winner} onRestart={handleRestart} />}
       <GameBoard
         onSelectSquare={handleSelectSquare}
         board={gameBoard}
